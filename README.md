@@ -26,7 +26,7 @@ The `steamLoginSecure` cookie regularly expires/changes, so you'll have to repea
 **Never share or publish your `steamLoginSecure` cookie!**
 
 # Output
-The wishlist is written to stdout. By `default steam_wishlist.py` will output JSON. Use the `--csv` option to have it output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
+The wishlist is written to stdout. By default `steam_wishlist.py` will output JSON. Use the `--csv` option to have it output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
 instead. The default separator for CSV is TAB and can be changed with the `-s/--separator` option. The `-f/--fields` argument can be used to specify which fields to output. For example:
 
 ``` shell
