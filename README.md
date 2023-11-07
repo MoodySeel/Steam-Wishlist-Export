@@ -15,7 +15,7 @@ python3 steam_wishlist.py <steamID>
 # Private wishlist
 If your wishlist is private, you'll have to take a few extra steps:
 * Log in to your Steam account with your browser.
-* Copy the value of the `steamLoginSecure` cookie. This value is long string starting with `76561198` followed by a lot of random letters and numbers.
+* Copy the value of the `steamLoginSecure` cookie. This value is a long string starting with `76561198` followed by a lot of random letters and numbers.
 * Supply the value of that cookie to `steam_wishlist.py` with the `-c` parameter:
 
 ``` shell
@@ -26,7 +26,7 @@ The `steamLoginSecure` cookie regularly expires/changes, so you'll have to repea
 **Never share or publish your `steamLoginSecure` cookie!**
 
 # Output
-The wishlist is written to stdout. By default steam_wishlist.py will output JSON. Use the `--csv` option to have it output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
+The wishlist is written to stdout. By `default steam_wishlist.py` will output JSON. Use the `--csv` option to have it output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
 instead. The default separator for CSV is TAB and can be changed with the `-s/--separator` option. The `-f/--fields` argument can be used to specify which fields to output. For example:
 
 ``` shell
