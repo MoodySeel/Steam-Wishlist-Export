@@ -131,6 +131,13 @@ group_filters.add_argument(
 )
 group_filters.add_argument("--free", help="free games only", action="store_true")
 group_filters.add_argument("--no-free", help="non-free games only", action="store_true")
+group_filters.add_argument("--demo", help="games with demos only", action="store_true")
+group_filters.add_argument(
+    "--achievements", help="games with achievements only", action="store_true"
+)
+group_filters.add_argument(
+    "--cards", help="games with trading cards only", action="store_true"
+)
 group_filters.add_argument(
     "--released", help="released games only", action="store_true"
 )
@@ -277,6 +284,20 @@ def clean_str(s: str) -> str:
     return "".join([c.lower() for c in s if c.isalpha()])
 
 
+filter_lists: list[set[str]] = []
+to_load = []
+if args.demo:
+    to_load.append("demos")
+if args.cards:
+    to_load.append("cards")
+if args.achievements:
+    to_load.append("achievements")
+for tl in to_load:
+    url = "https://raw.githubusercontent.com/BlueBoxWare/steamdb/main/lists/" + tl
+    progress("Loading {}\n".format(tl))
+    with urllib.request.urlopen(request(url)) as response:
+        filter_lists.append({s.decode("utf-8") for s in response.read().split(b"\n")})
+
 for gameid, fields in wishlist.items():
     add_game = True
 
@@ -322,6 +343,9 @@ for gameid, fields in wishlist.items():
 
     if add_game and args.deck:
         add_game = int(fields.get("deck_compat", 0)) >= wanted_deck_rating
+
+    for filter_list in filter_lists:
+        add_game = add_game and gameid in filter_list
 
     if add_game:
         filtered[gameid] = fields
@@ -374,7 +398,7 @@ else:
                 value = item[0]
             else:
                 value = item[1].get(args.sort, 0 if args.num else "")
-        if args.num:
+        if args.num or str(value).isdigit():
             return int(value)
         return str(value)
 
@@ -385,7 +409,7 @@ else:
                 output_fields.append(gameid)
             elif field == "released":
                 output_fields.append("" if fields.get("prerelease", False) else "1")
-            elif field == "link":
+            elif field == "link" or field == "url":
                 output_fields.append(
                     "https://store.steampowered.com/app/{}".format(gameid)
                 )
