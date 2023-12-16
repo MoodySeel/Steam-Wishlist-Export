@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 import argparse
 import csv
 import json
 import sys
 import urllib.error
 import urllib.request
-from typing import Optional
 
 
 ##
@@ -30,7 +31,7 @@ def request(url: str) -> urllib.request.Request:
     return req
 
 
-def integer(value: str, name: str, max: Optional[int] = None) -> int:
+def integer(value: str, name: str, max: int | None = None) -> int:
     if value is None:
         return 0
     err = "{} must be an integer".format(name)
@@ -194,9 +195,9 @@ group_price_filter.add_argument(
 
 args = parser.parse_args()
 
-wanted_discount = wanted_discount = integer(args.discount, "Discount", 100)
-wanted_price = wanted_price = integer(args.price, "Price")
-wanted_deck_rating = wanted_deck_rating = integer(args.deck, "Steam Deck rating", 3)
+wanted_discount = integer(args.discount, "Discount", 100)
+wanted_price = integer(args.price, "Price")
+wanted_deck_rating = integer(args.deck, "Steam Deck rating", 3)
 
 ##
 ## Fetch wishlist
@@ -235,20 +236,20 @@ else:
                     break
                 for k, v in json_obj.items():
                     wishlist[k] = v
-        except urllib.error.HTTPError as e:
+        except urllib.error.HTTPError:
             pe("Could not get wishlist. ")
             if args.cookie:
                 pe("Is the provided cookie invalid or expired?\n\n")
             else:
                 pe("Is the wishlist private?\n\n")
-            raise e
+            raise
 
 
 ##
 ## Get price information
 ##
 if args.cc and (
-    not args.load or "_price" not in list(wishlist.values())[0] or args.refresh
+    not args.load or "_price" not in next(iter(wishlist.values())) or args.refresh
 ):
     BATCH_SIZE = 100
     gameids = list(wishlist.keys())
@@ -355,7 +356,7 @@ wishlist = filtered
 ##
 ## Output
 ##
-wanted_fields: Optional[list[str]] = (
+wanted_fields: list[str] | None = (
     None if not getattr(args, "fields", None) else args.fields.split(",")
 )
 
