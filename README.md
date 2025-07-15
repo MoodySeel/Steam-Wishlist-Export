@@ -1,6 +1,6 @@
 A Python script to export your Steam wishlist.
 
-> :warning: Provided as-is, use at your own risk.
+> ⚠️ Provided as-is, use at your own risk.
 
 Only tested on Linux.
 
